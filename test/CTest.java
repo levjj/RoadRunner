@@ -61,11 +61,11 @@ public class CTest {
 	}
 
 	public static void main(String args[]) throws Exception {
+        linear(12);
         linear(120);
         linear(1200);
-        linear(12000);
+        quadratic(12);
         quadratic(120);
         quadratic(1200);
-        quadratic(12000);
 	}
 }
