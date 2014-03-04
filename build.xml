@@ -132,6 +132,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 		<apt factorypathref="rr.classpath" compile="false" classpathref="rr.classpath" factory="rr.annotations.BuildToolList" srcdir="${src.dir}/rr/simple" />
 		<move file="rrtools.properties" todir="${classes.dir}/rr/simple" />
+
+		<apt factorypathref="rr.classpath" compile="false" classpathref="rr.classpath" factory="rr.annotations.BuildToolList" srcdir="${src.dir}/rr/profiling" />
+		<move file="rrtools.properties" todir="${classes.dir}/rr/profiling" />
 	</target>
 
 
@@ -144,7 +147,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			</manifest>
 		</jar>
 		<echo file="${bin.dir}/${run-script}" append="false" message="#!/bin/bash${line.separator}
-								  export RR_TOOLPATH=`pwd`/classes/rr/simple:`pwd`/classes/tools${line.separator}
+								  export RR_TOOLPATH=`pwd`/classes/rr/profiling:`pwd`/classes/rr/simple:`pwd`/classes/tools${line.separator}
 								  ${java.home}/bin/java -version ${line.separator}
 								  ${java.home}/bin/java ${rr.vmargs} -Xbootclasspath/p:${toString:rr.classpath.jar}:$$RR_TOOLPATH ${rr.main} $$*" />
 		<chmod file="${bin.dir}/${run-script}" perm="u+x" />
