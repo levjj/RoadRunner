@@ -61,45 +61,46 @@ import java.util.Comparator;
 @Abbrev("PR")
 final public class MethodProfiler extends Tool {
 
-    Map<MethodInfo, Long> totalTime = new HashMap<MethodInfo, Long>();
-    Deque<Long> currentTimers = new ArrayDeque<Long>();
+	Map<MethodInfo, Long> totalTime = new HashMap<MethodInfo, Long>();
+	Deque<Long> currentTimers = new ArrayDeque<Long>();
 
-    public MethodProfiler(String name, Tool next, CommandLine commandLine) {
-        super(name, next, commandLine);
-    }
+	public MethodProfiler(String name, Tool next, CommandLine commandLine) {
+		super(name, next, commandLine);
+	}
 
-    @Override
-    public void enter(MethodEvent me) {
-        currentTimers.addFirst(System.currentTimeMillis());
-        super.enter(me);
-    }
+	@Override
+	public void enter(MethodEvent me) {
+		currentTimers.addFirst(System.currentTimeMillis());
+		super.enter(me);
+	}
 
-    @Override
-    public void exit(MethodEvent me) {
-        super.exit(me);
-        long time = System.currentTimeMillis() - currentTimers.removeFirst();
-        if (totalTime.containsKey(me.getInfo())) {
-            time += totalTime.get(me.getInfo());
-        }
-        totalTime.put(me.getInfo(), time);
-    }
+	@Override
+	public void exit(MethodEvent me) {
+		super.exit(me);
+		long time = System.currentTimeMillis() - currentTimers.removeFirst();
+		if (totalTime.containsKey(me.getInfo())) {
+			time += totalTime.get(me.getInfo());
+		}
+		totalTime.put(me.getInfo(), time);
+	}
 
-    final static Comparator<Map.Entry<MethodInfo,Long>> timeComparator = new Comparator<Map.Entry<MethodInfo,Long>>() {
-        @Override
-        public int compare(Map.Entry<MethodInfo,Long> t1, Map.Entry<MethodInfo,Long> t2) {
-            return t1.getValue() > t2.getValue() ? 1 : -1;
-        }
-    };
+	final static Comparator<Map.Entry<MethodInfo,Long>> timeComparator = new Comparator<Map.Entry<MethodInfo,Long>>() {
+		@Override
+		public int compare(Map.Entry<MethodInfo,Long> t1, Map.Entry<MethodInfo,Long> t2) {
+			return t1.getValue() > t2.getValue() ? 1 : -1;
+		}
+	};
 
-    @Override
-    public void fini() {
-        Set<Map.Entry<MethodInfo,Long>> entries, sortedEntries;
-        entries = totalTime.entrySet();
-        sortedEntries = new TreeSet(timeComparator);
-        sortedEntries.addAll(entries);
+	@Override
+	public void fini() {
+		Set<Map.Entry<MethodInfo,Long>> entries, sortedEntries;
+		entries = totalTime.entrySet();
+		sortedEntries = new TreeSet<MethodInfo,Long>(timeComparator);
+		sortedEntries.addAll(entries);
 
-        for (Map.Entry<MethodInfo,Long> ml : sortedEntries) {
-            Util.logf("%s: %d ms", ml.getKey().toSimpleName(), ml.getValue());
-        }
-    }
+		for (Map.Entry<MethodInfo,Long> ml : sortedEntries) {
+			Util.logf("%s: %d ms", ml.getKey().toSimpleName(), ml.getValue());
+		}
+	}
 }
+// vim: noet:ts=4:sw=4

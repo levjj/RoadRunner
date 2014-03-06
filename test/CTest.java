@@ -42,30 +42,27 @@ public class CTest {
 
 	static int y;
 
-    public static void inc() {
-	    y++;
-    }
-
 	public static void linear(int iters) {
 		for (int i = 0; i < iters; i++) {
-		    inc();
+			y++;
 		}
 	}
 
 	public static void quadratic(int iters) {
 		for (int i = 0; i < iters; i++) {
-       		for (int j = 0; j < iters; j++) {
-	    	    inc();
-            }
+			for (int j = 0; j < i; j++) {
+				y++;
+			}
 		}
 	}
 
 	public static void main(String args[]) throws Exception {
-        linear(12);
-        linear(120);
-        linear(1200);
-        quadratic(12);
-        quadratic(120);
-        quadratic(1200);
+		linear(12);
+		linear(120);
+		linear(1200);
+		quadratic(12);
+		quadratic(120);
+		quadratic(1200);
 	}
 }
+// vim: noet:ts=4:sw=4
