@@ -235,7 +235,7 @@ public class RRReplay implements MetaDataInfoVisitor {
 					MethodInfo fad = MetaDataInfoMaps.getMethods().get(accessKey);
 					Assert.assertTrue(fad != null, "Bad MetaData for " + accessKey);
 					int obj = in.readInt();
-					if (doIt) RREventGenerator.enter(object(obj), fad.getId(), thread(thread));
+					if (doIt) RREventGenerator.enter(object(obj), fad.getId(), thread(thread), new Object[]{});
 					break;
 				}
 				case EXIT: {

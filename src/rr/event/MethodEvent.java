@@ -57,6 +57,9 @@ public class MethodEvent extends Event {
 	/** If using contexts, this will be the call site location */
 	private InvokeInfo invokeInfo;
 	
+	/** Method arguments */
+	private Object[] arguments;
+	
 	public MethodEvent(ShadowThread td) {
 		super(td);
 	}
@@ -101,4 +104,12 @@ public class MethodEvent extends Event {
 		this.invokeInfo = invokeInfo;
 	}
 
+	public Object[] getArguments() {
+		return arguments;
+	}
+
+	/** @RRInternal */
+	public void setArguments(Object[] arguments) {
+		this.arguments = arguments;
+	}	
 }

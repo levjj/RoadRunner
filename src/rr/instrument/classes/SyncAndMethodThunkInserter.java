@@ -310,6 +310,24 @@ public class SyncAndMethodThunkInserter extends RRClassAdapter implements Opcode
 				MethodInfo m = method;
 				mv.push(m.getId());
 				mv.invokeStatic(Constants.THREAD_STATE_TYPE, Constants.CURRENT_THREAD_METHOD);
+				
+				// Create a new Object[] array for all arguments
+				Type args[] = Type.getArgumentTypes(desc);
+				mv.push(args.length);
+				mv.newArray(Constants.OBJECT_TYPE);
+				
+				// Store arguments in Object[] array 
+				int localVarIndex = (access & ACC_STATIC) != 0 ? 0 : 1;
+				for (int i = 0; i < args.length; i++) {
+					mv.dup(); // DUP the Object[] array
+					mv.push(i); // index of argument
+					mv.visitVarInsn(ASMUtil.loadInstr(args[i]), localVarIndex); // load argument
+					mv.box(args[i]);  // box primitive types
+					mv.visitInsn(AASTORE); // store in array
+					localVarIndex += args[i].getSize(); // advance to next argument
+					                                    // doubles have size 2, everything else 1
+				}
+				
 				mv.invokeStatic(Constants.MANAGER_TYPE, Constants.ENTER_METHOD);
 				mv.visitLabel(enteredBlock);
 

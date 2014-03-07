@@ -59,6 +59,7 @@ public class Constants {
 	public static final Type ACME_UTIL_TYPE = Type.getType(acme.util.Util.class);
 	public static final Type THREAD_STATE_TYPE = Type.getObjectType("rr/state/ShadowThread");  // special to avoid loading before tools
 	public static final Type GUARD_STATE_TYPE = Type.getObjectType("rr/state/ShadowVar");
+	public static final Type OBJECTA_TYPE = Type.getType(Object[].class);
 
 	static {
 		try {
@@ -96,7 +97,7 @@ public class Constants {
 	public static final Method TEST_ACQUIRE_METHOD = new Method("testAcquire", Type.BOOLEAN_TYPE, new Type[] { OBJECT_TYPE, Type.INT_TYPE, THREAD_STATE_TYPE });
 	public static final Method RELEASE_METHOD = new Method("release", Type.VOID_TYPE, new Type[] { OBJECT_TYPE, Type.INT_TYPE, THREAD_STATE_TYPE });
 	public static final Method TEST_RELEASE_METHOD = new Method("testRelease", Type.BOOLEAN_TYPE, new Type[] { OBJECT_TYPE, Type.INT_TYPE, THREAD_STATE_TYPE });
-	public static final Method ENTER_METHOD = new Method("enter", Type.VOID_TYPE, new Type[] { OBJECT_TYPE, Type.INT_TYPE, THREAD_STATE_TYPE });
+	public static final Method ENTER_METHOD = new Method("enter", Type.VOID_TYPE, new Type[] { OBJECT_TYPE, Type.INT_TYPE, THREAD_STATE_TYPE, OBJECTA_TYPE });
 	public static final Method EXIT_METHOD = new Method("exit", Type.VOID_TYPE, new Type[] { THREAD_STATE_TYPE });
 	public static final Method INVOKE_METHOD = new Method("invoke", Type.VOID_TYPE, new Type[] { Type.INT_TYPE, THREAD_STATE_TYPE });
 

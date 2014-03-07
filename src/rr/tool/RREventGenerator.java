@@ -475,11 +475,11 @@ public class RREventGenerator extends RR {
 		}
 	}
 
-	public static void enter(final Object target, final int methodDataId, final ShadowThread td) {
+	public static void enter(final Object target, final int methodDataId, final ShadowThread td, final Object[] args) {
 
 		try {
 			final MethodInfo methodData = MetaDataInfoMaps.getMethods().get(methodDataId);
-			final MethodEvent me = td.enter(target, methodData); 
+			final MethodEvent me = td.enter(target, methodData, args); 
 			int invokeId = td.invokeId;
 			try {
 				final InvokeInfo invokeInfo = MetaDataInfoMaps.getInvokes().get(invokeId);

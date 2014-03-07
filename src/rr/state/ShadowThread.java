@@ -283,10 +283,11 @@ public class ShadowThread extends Decoratable implements ShadowVar {
 	/*
 	 * @RRInternal.  Handles method stack. 
 	 */
-	public final MethodEvent enter(final Object target, final MethodInfo methodData) {
+	public final MethodEvent enter(final Object target, final MethodInfo methodData, Object[] args) {
 		blockStack[blockCount].setTarget(target);
 		blockStack[blockCount].setInfo(methodData);
 		blockStack[blockCount].setEnter(true);
+		blockStack[blockCount].setArguments(args);
 		return blockStack[blockCount++];
 	}
 
