@@ -38,31 +38,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package test;
 
+import java.util.Random;
+
 public class CTest {
 
 	static int y;
 
 	public static void linear(int iters) {
+		y = (int)System.currentTimeMillis();
 		for (int i = 0; i < iters; i++) {
-			y++;
+			y = y + (int)Math.ceil(Math.sin(y) * Math.cos(y*y));
 		}
 	}
 
 	public static void quadratic(int iters) {
+		y = (int)System.currentTimeMillis();
 		for (int i = 0; i < iters; i++) {
 			for (int j = 0; j < i; j++) {
-				y++;
+				y = y + (int)Math.ceil(Math.sin(y) * Math.cos(y*y));
 			}
 		}
 	}
 
 	public static void main(String args[]) throws Exception {
-		linear(12);
-		linear(120);
-		linear(1200);
-		quadratic(12);
-		quadratic(120);
-		quadratic(1200);
+		Random r = new Random();
+		for (int i = 0; i < 20; i++) {
+			linear(r.nextInt(40000));
+			quadratic(r.nextInt(1000));
+		}
+		System.out.printf("The result y = %d \n", y);
 	}
 }
 // vim: noet:ts=4:sw=4
