@@ -37,31 +37,23 @@
 
 package rr.profiling;
 
-import rr.annotations.Abbrev;
-import rr.event.MethodEvent;
-import rr.state.ShadowVar;
-import rr.tool.Tool;
-import rr.meta.MethodInfo;
-import acme.util.count.Timer;
-import acme.util.option.CommandLine;
-import acme.util.Util;
-
-import java.util.TreeSet;
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Comparator;
+
+import rr.annotations.Abbrev;
+import rr.event.MethodEvent;
+import rr.meta.MethodInfo;
+import rr.tool.Tool;
+import acme.util.Util;
+import acme.util.option.CommandLine;
 
 /**
  * Count the number of events for most common cases.
  */
 
 @Abbrev("PR")
-final public class MethodProfiler extends Tool {
+public class MethodProfiler extends Tool {
 
-	Map<MethodInfo, Long> totalTime = new HashMap<MethodInfo, Long>();
 	Deque<Long> currentTimers = new ArrayDeque<Long>();
 
 	public MethodProfiler(String name, Tool next, CommandLine commandLine) {
@@ -78,29 +70,16 @@ final public class MethodProfiler extends Tool {
 	public void exit(MethodEvent me) {
 		super.exit(me);
 		long time = System.currentTimeMillis() - currentTimers.removeFirst();
-		if (totalTime.containsKey(me.getInfo())) {
-			time += totalTime.get(me.getInfo());
+		MethodInfo mi = me.getInfo();
+		StringBuilder sb = new StringBuilder();
+		sb.append(mi.toSimpleName());
+		sb.append("(");
+		for (Object obj : me.getArguments()) {
+			sb.append(obj);
+			sb.append(",");
 		}
-		totalTime.put(me.getInfo(), time);
-	}
-
-	final static Comparator<Map.Entry<MethodInfo,Long>> timeComparator = new Comparator<Map.Entry<MethodInfo,Long>>() {
-		@Override
-		public int compare(Map.Entry<MethodInfo,Long> t1, Map.Entry<MethodInfo,Long> t2) {
-			return t1.getValue() > t2.getValue() ? 1 : -1;
-		}
-	};
-
-	@Override
-	public void fini() {
-		Set<Map.Entry<MethodInfo,Long>> entries, sortedEntries;
-		entries = totalTime.entrySet();
-		sortedEntries = new TreeSet<MethodInfo,Long>(timeComparator);
-		sortedEntries.addAll(entries);
-
-		for (Map.Entry<MethodInfo,Long> ml : sortedEntries) {
-			Util.logf("%s: %d ms", ml.getKey().toSimpleName(), ml.getValue());
-		}
+		sb.append(") ");
+		sb.append(time);
+		Util.log(sb.toString());
 	}
 }
-// vim: noet:ts=4:sw=4
