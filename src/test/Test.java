@@ -38,30 +38,37 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package test;
 
-public class Test extends Thread{
 
-    static final int ITERS = 100;
+public class Test extends Thread {
+	
+	private final static int ITERS = 15;
 
-	static int y;
-
-    public void inc() {
-	y++;
-    }
+	private static int count = 0;
+	
+	public static void inc() {
+		count = get() + 1;
+	}
+	
+	public static int get() {
+		return count;
+	}
 
 	@Override
 	public void run() {
 		for (int i = 0; i < ITERS; i++) {
-		    inc();
+			inc();
 		}
 	}
 
 	public static void main(String args[]) throws Exception {
-		final Test t1 = new Test();
-		final Test t2 = new Test();
-		t1.start();
-		t2.start();
-		t1.join();
-		t2.join();
-		System.out.println("Is it " + (ITERS * 2) + "? " + y);
+		Test[] tests = new Test[ITERS];
+		for (int i = 0; i < ITERS; i++) {
+			tests[i] = new Test();
+			tests[i].start();
+		}
+		for (int i = 0; i < ITERS; i++) {
+			tests[i].join();
+		}
+		System.out.println("Is it " + (ITERS*ITERS) + "? " + get());
 	}
 }
