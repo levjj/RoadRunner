@@ -38,37 +38,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package test;
 
+import rr.contracts.ThreadUnsafe;
 
-public class Test extends Thread {
+public class Test implements ThreadUnsafe, Runnable {
 	
-	private final static int ITERS = 15;
-
-	private static int count = 0;
+	private int count = 0;
 	
-	public static void inc() {
+	public void inc() {
 		count = get() + 1;
 	}
 	
-	public static int get() {
+	public int get() {
 		return count;
 	}
 
-	@Override
+	final static int ITERS = 15;
+	final static Test t = new Test();
+	
 	public void run() {
 		for (int i = 0; i < ITERS; i++) {
-			inc();
+			//synchronized (t) {
+				t.inc();
+			//}
 		}
 	}
-
+	
 	public static void main(String args[]) throws Exception {
-		Test[] tests = new Test[ITERS];
+		Thread[] tests = new Thread[ITERS];
 		for (int i = 0; i < ITERS; i++) {
-			tests[i] = new Test();
+			tests[i] = new Thread(new Test());
 			tests[i].start();
 		}
 		for (int i = 0; i < ITERS; i++) {
 			tests[i].join();
 		}
-		System.out.println("Is it " + (ITERS*ITERS) + "? " + get());
+		System.out.println("Is it " + (ITERS*ITERS) + "? " + t.get());
 	}
 }
