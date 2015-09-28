@@ -127,14 +127,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	<target name="props" depends="">
-		<apt factorypathref="rr.classpath" compile="false" classpathref="rr.classpath" factory="rr.annotations.BuildToolList" srcdir="${src.dir}/tools">
-		  <compilerarg value="-XDignore.symbol.file" />
-		</apt>
-
-		<move file="rrtools.properties" todir="${classes.dir}/tools" />
-
-		<apt factorypathref="rr.classpath" compile="false" classpathref="rr.classpath" factory="rr.annotations.BuildToolList" srcdir="${src.dir}/rr/simple" />
-		<move file="rrtools.properties" todir="${classes.dir}/rr/simple" />
+		<copy file="rrtools.properties" todir="${classes.dir}/tools" />
+		<copy file="rrtools.properties" todir="${classes.dir}/rr/simple" />
 	</target>
 
 

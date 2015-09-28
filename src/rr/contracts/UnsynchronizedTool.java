@@ -3,15 +3,14 @@ package rr.contracts;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import acme.util.Util;
+import acme.util.option.CommandLine;
 import rr.annotations.Abbrev;
-import rr.event.ClassInitializedEvent;
 import rr.event.MethodEvent;
 import rr.meta.ClassInfo;
 import rr.state.ShadowLock;
 import rr.state.ShadowThread;
 import rr.tool.Tool;
-import acme.util.Util;
-import acme.util.option.CommandLine;
 
 @Abbrev("UT")
 public class UnsynchronizedTool extends Tool {
@@ -51,16 +50,13 @@ public class UnsynchronizedTool extends Tool {
 	}
 
 	private boolean isInstance(MethodEvent me) {
-		// int lastBlock = me.getThread().getBlockDepth() - 1;
-		// Object lastTarget = me.getThread().getBlock(lastBlock).getTarget();
-		// return lastTarget != me.getTarget();
 		return !me.getInfo().isStatic() && me.getTarget() != null;
 	}
 	
 	private void reportContractViolation(MethodEvent me) {
 		Util.printf("\nContract Violation: %s\n", me);
 	}
-
+	
 	@Override
 	public void exit(MethodEvent me) {
 		if (classes.contains(me.getInfo().getOwner()) && isInstance(me)) {
