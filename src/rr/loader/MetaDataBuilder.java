@@ -46,6 +46,7 @@ import rr.meta.FieldInfo;
 import rr.meta.MetaDataInfoMaps;
 import rr.meta.MethodInfo;
 import rr.meta.ClassInfo.State;
+import rr.org.objectweb.asm.AnnotationVisitor;
 import rr.org.objectweb.asm.ClassReader;
 import rr.org.objectweb.asm.ClassVisitor;
 import rr.org.objectweb.asm.FieldVisitor;
@@ -97,6 +98,16 @@ public class MetaDataBuilder {
 				}
 			}
 			super.visit(version, access, name, signature, superName, interfaces);
+		}
+		
+		@Override
+		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+			preLoadRec(desc);
+			MetaDataInfoMaps.getClass(desc);
+			if (current.stateAtMost(ClassInfo.State.IN_PRELOAD)) {
+				current.addAnnotation(MetaDataInfoMaps.getClass(desc));
+			}
+			return super.visitAnnotation(desc, visible);
 		}
 
 		@Override

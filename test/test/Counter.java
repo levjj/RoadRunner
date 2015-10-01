@@ -2,7 +2,8 @@ package test;
 
 import rr.contracts.ThreadUnsafe;
 
-public class Counter implements ThreadUnsafe {
+@ThreadUnsafe
+public class Counter {
 	private int count = 0;
 	
 	public void inc() {
