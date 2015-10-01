@@ -42,6 +42,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import com.sun.xml.internal.ws.org.objectweb.asm.Type;
+
 import acme.util.Assert;
 import acme.util.Util;
 
@@ -57,6 +59,7 @@ public class ClassInfo extends MetaDataInfo implements Comparable<ClassInfo> {
 	protected final Vector<FieldInfo> fields = new Vector<FieldInfo>();
 	protected final Vector<ClassInfo> interfaces = new Vector<ClassInfo>();
 	protected final Vector<MethodInfo> methods = new Vector<MethodInfo>();
+	protected final Vector<ClassInfo> annotations = new Vector<ClassInfo>();
 
 	protected volatile Vector<FieldInfo> instanceFields;
 
@@ -204,6 +207,13 @@ public class ClassInfo extends MetaDataInfo implements Comparable<ClassInfo> {
 		this.state = state;
 	}
 
+	public void addAnnotation(ClassInfo a) {
+		if (!annotations.contains(a)) {
+			assertStateAtMost(State.IN_PRELOAD);
+			annotations.add(a);	
+		}
+	}
+
 	public void addInterface(ClassInfo i) {
 		if (!interfaces.contains(i)) {
 			assertStateAtMost(State.IN_PRELOAD);
@@ -274,6 +284,16 @@ public class ClassInfo extends MetaDataInfo implements Comparable<ClassInfo> {
 		int i = instanceFields.indexOf(x);
 		// commented out for performance: Assert.assertTrue(i != -1 || x.isStatic() || x.isFinal());
 		return i;
+	}
+
+	public boolean hasAnnotation(Class<?> annotation) {
+		assertStateAtLeast(State.PRELOADED);
+		for (ClassInfo ci : annotations) {
+			if (ci.getName().equals(Type.getDescriptor(annotation))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

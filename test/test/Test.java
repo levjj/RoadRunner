@@ -46,7 +46,7 @@ public class Test implements Runnable {
 		this.counter = c;
 	}
 
-	final static int ITERS = 55;
+	final static int ITERS = 16;
 
 	public void run() {
 		for (int i = 0; i < ITERS; i++) {
