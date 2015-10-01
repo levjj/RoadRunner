@@ -40,9 +40,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	<property name="src.dir" location="${rr.basedir}/src" />
+	<property name="test.dir" location="${rr.basedir}/test" />
 	<property name="build.dir" location="${rr.basedir}/build" />
 	<property name="auto.dir" location="${rr.basedir}/auto" />
 	<property name="classes.dir" location="${rr.basedir}/classes" />
+	<property name="classes-test.dir" location="${rr.basedir}/classes-test" />
 	<property name="docs.dir" location="${rr.basedir}/docs" />
 	<property name="log.dir" location="${rr.basedir}/log" />
 
@@ -78,6 +80,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		<delete dir="${build.dir}" />
 		<delete dir="${auto.dir}" />
 		<delete dir="${classes.dir}" />
+		<delete dir="${classes-test.dir}" />
 		<delete dir="${docs.dir}" />
 		<delete dir="${log.dir}" />
 	</target>
@@ -113,6 +116,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		<mkdir dir="${classes.dir}" />
 		<mkdir dir="${auto.dir}/bin" />
 		<javac srcdir="${src.dir}:${auto.dir}" destdir="${classes.dir}" classpathref="rr.classpath" debug="true">
+			<compilerarg value="-Xbootclasspath/p:${classes.dir}" />
+			<compilerarg value="-XDignore.symbol.file" />
+		</javac>
+		<javac srcdir="${test.dir}" destdir="${classes-test.dir}" classpathref="rr.classpath" debug="true">
 			<compilerarg value="-Xbootclasspath/p:${classes.dir}" />
 			<compilerarg value="-XDignore.symbol.file" />
 		</javac>
@@ -175,21 +182,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			<fileset dir="${rr.basedir}" includesfile="${src.dir}/api.txt" casesensitive="yes" />
 
 			<link href="http://download.oracle.com/javase/6/docs/api/" />
-			
+
 		</javadoc>
 	</target>
 
 
 	<target name="bootstrap-loader">
-		<mkdir dir="${classes.dir}"/>
-		<javac srcdir="${src.dir}/acme" destdir="${classes.dir}" debug="true"/>
-		<javac srcdir="${src.dir}" includes="rr/loader/ClassLoaderTransformer.java" destdir="${classes.dir}" debug="true"/>
-		<java classname="rr.loader.ClassLoaderTransformer" classpath="${classes.dir}"/>
-		<copy file="/tmp/RR_ClassLoader.class" tofile="${classes.dir}/java/lang/ClassLoader.class"/>
-		<mkdir dir="${jar.dir}"/>
-		<jar destfile="${jar.dir}/ClassLoaderWithListener.jar" basedir="${classes.dir}"/>
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${classes-test.dir}" />
+		<javac srcdir="${src.dir}/acme" destdir="${classes.dir}" debug="true" />
+		<javac srcdir="${src.dir}" includes="rr/loader/ClassLoaderTransformer.java" destdir="${classes.dir}" debug="true" />
+		<java classname="rr.loader.ClassLoaderTransformer" classpath="${classes.dir}" />
+		<copy file="/tmp/RR_ClassLoader.class" tofile="${classes.dir}/java/lang/ClassLoader.class" />
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/ClassLoaderWithListener.jar" basedir="${classes.dir}" />
 	</target>
 
 	<target name="clean-build" depends="clean,wc,compile,jar,agent,javadoc" />
 
+	<target name="run-test" depends="compile,jar,agent">
+		<exec executable="build/bin/rrrun">
+			<env key="RR_TOOLPATH" path="jars/java-cup-11a.jar"/>
+			<arg value="-classpath=classes-test" />
+			<arg value="-tool=UT" />
+			<arg value="test.Test" />
+		</exec>
+	</target>
 </project>
