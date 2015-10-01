@@ -5,3 +5,4 @@ docs
 log
 test/CTest.class
 test/*.arff
+classes-test
