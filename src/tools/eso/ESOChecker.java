@@ -2,13 +2,15 @@ package tools.eso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import acme.util.Assert;
 import acme.util.Util;
 import acme.util.decorations.Decoration;
 import acme.util.decorations.DecorationFactory;
-import acme.util.decorations.DefaultValue;
 import acme.util.decorations.DecorationFactory.Type;
+import acme.util.decorations.DefaultValue;
 import acme.util.option.CommandLine;
 import rr.annotations.Abbrev;
 import rr.contracts.ThreadUnsafe;
@@ -30,12 +32,14 @@ public class ESOChecker extends Tool {
 	public static final String val = "kongposh";
 	private Collection<ClassInfo> classes;
 	
-	static final Decoration<ShadowLock, ESOLockData> esoLockData = ShadowLock.makeDecoration("ESO:ShadowLock",
-																							 DecorationFactory.Type.MULTIPLE, new DefaultValue<ShadowLock, ESOLockData>() {
-																								 public ESOLockData get(final ShadowLock ld) {
-																									 return new ESOLockData(ld);
-																								 }
-																							 });
+	private Map<Object, CV> esoData = new HashMap<Object, CV>();
+	
+	static final Decoration<ShadowLock, CV> esoLockData = ShadowLock.makeDecoration("ESO:ShadowLock",
+																					DecorationFactory.Type.MULTIPLE, new DefaultValue<ShadowLock, CV>() {
+																						public CV get(final ShadowLock ld) {
+																							return new CV(ESOCheckerConstants.CV_INIT_SIZE);
+																						}
+																					});
 	
 	public static final Decoration<ClassInfo, CV> esoInfoData = MetaDataInfoMaps.getClasses()
 	.makeDecoration("ESO:InfoData", Type.MULTIPLE, new DefaultValue<ClassInfo, CV>() {
@@ -111,7 +115,7 @@ public class ESOChecker extends Tool {
 	public void acquire(AcquireEvent ae) {
 		final ShadowThread ct = ae.getThread();
 		final ShadowLock l = ae.getLock();
-		getCv(ct).max(esoLockData.get(l).cv);
+		getCv(ct).max(esoLockData.get(l));
 		super.acquire(ae);
 	}
 
@@ -119,7 +123,7 @@ public class ESOChecker extends Tool {
 	public void release(ReleaseEvent re) {
 		final ShadowThread ct = re.getThread();
 		final ShadowLock l = re.getLock();
-		CV lcv = esoLockData.get(l).cv;
+		CV lcv = esoLockData.get(l);
 		CV ctcv = getCv(ct);
 		lcv.set(ct.getTid(), ctcv.get(ct.getTid())); // updated the lock vc
 		// value for current
@@ -133,11 +137,16 @@ public class ESOChecker extends Tool {
 	public void enter(MethodEvent me) {
 		
 		synchronized (this) {
-			
+			Object eso = me.getTarget();
+			CV esocv = esoData.get(eso);
+			if (esocv == null) {
+				esocv = createCV(ESOCheckerConstants.CV_INIT_SIZE);
+				esoData.put(eso, esocv);
+			}
 			ClassInfo esoInfo = me.getInfo().getOwner();
 			if ((classes.contains(esoInfo) || isContract(esoInfo)) && isInstance(me)) {
 				ShadowThread ct = me.getThread();
-				CV esocv = esoInfoData.get(esoInfo);
+				// CV esocv = esoInfoData.get(esoInfo);
 				int cid = ct.getTid();
 				CV ctcv = getCv(ct);
 				if (esocv.anyGt(ctcv)) {
@@ -157,7 +166,7 @@ public class ESOChecker extends Tool {
 	}
 	
 	private void reportContractViolation(MethodEvent me) {
-		Util.printf("\nContract Violation: %s\n", me + "  by thread" + me.getThread().getTid());
+		Util.printf("\nContract Violation: %s\n", me + "  by thread " + me.getThread().getTid());
 	}
 	
 	// @Override
