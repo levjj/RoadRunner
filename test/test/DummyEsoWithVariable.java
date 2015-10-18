@@ -3,7 +3,7 @@ package test;
 import rr.contracts.ThreadUnsafe;
 
 @ThreadUnsafe
-public class DummyEsoWithVariable {
+public class DummyESOWithVariable {
 	private int count = 0;
 
 	public void inc() {
