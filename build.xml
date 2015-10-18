@@ -195,7 +195,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			<env key="RR_TOOLPATH" path="jars/java-cup-11a.jar"/>
 			<arg value="-classpath=classes-test" />
 			<arg value="-tool=ESO" />
-			<arg value="test.Test" />
+			<arg value="test.RaceTest" />
 		</exec>
 	</target>
 </project>
