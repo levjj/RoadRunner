@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	<property name="jar.dir" location="${build.dir}/jar" />
 	<property name="bin.dir" location="${build.dir}/bin" />
-
+	<property name="lib.dir" location="${rr.basedir}/jars" />
 
 
 	<property name="java.home" value="$$JAVA_HOME" />
@@ -62,8 +62,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	<property name="run-script" value="rrrun" />
 
 	<path id="rr.classpath">
-		<pathelement location="${classes.dir}" />
-		<pathelement location="${cup.jar}" />
+		<fileset dir="${lib.dir}">
+			<include name="java-cup-11a.jar" />
+			<include name="jflex.jar" />
+			<include name="junit.jar" />
+			<include name="hamcrest.jar" />
+		</fileset>
+
 	</path>
 
 	<path id="rr.classpath.jar">
@@ -206,10 +211,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	<target name="run-test" depends="compile,jar,agent">
 		<exec executable="build/bin/rrrun">
-			<env key="RR_TOOLPATH" path="jars/java-cup-11a.jar"/>
-			<arg value="-classpath=classes-test" />
+			<env key="RR_TOOLPATH" path="jars/java-cup-11a.jar" />
+			<arg value="-classpath=classes-test:jars/junit.jar:jars/hamcrest.jar" />
 			<arg value="-tool=ESO" />
-			<arg value="test.RaceTest" />
+			<arg value="test.TestRunner" />
 		</exec>
 	</target>
 </project>
