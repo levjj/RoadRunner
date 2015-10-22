@@ -1,5 +1,7 @@
 package test;
 
+import org.junit.Test;
+
 public class SyncTest {
 
 	private DummyESOWithEmptyMethod dummyEso;
@@ -18,22 +20,17 @@ public class SyncTest {
 		dummyEso.exec();
 	}
 
-	private void execute() throws InterruptedException {
+	@Test
+	private void execute() {
 		dummyEso = new DummyESOWithEmptyMethod();
 		dummyEso.exec();
 		Thread t1 = new Thread(new Job1());
 		t1.start();
 		accessESO();
-		t1.join();
-
-	}
-
-	public static void main(String args[]) {
-
-		SyncTest test = new SyncTest();
 		try {
-			test.execute();
+			t1.join();
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

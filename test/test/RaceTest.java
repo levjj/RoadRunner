@@ -38,11 +38,14 @@
 
 package test;
 
+import org.junit.Test;
+
 public class RaceTest {
-	
+
 	private DummyESOWithVariable eso;
 	final static int ITERS = 2;
-	
+
+	@Test
 	public void execute() throws InterruptedException {
 		eso = new DummyESOWithVariable();
 		Thread[] tasks = new Thread[ITERS];
@@ -52,28 +55,19 @@ public class RaceTest {
 		}
 		for (int i = 0; i < ITERS; i++) {
 			tasks[i].join();
-			
+
 		}
-		
+
 		System.out.println(">> Value is " + ITERS + " ? " + eso.get());
 	}
-	
-	public static void main(String args[]) {
-		RaceTest test = new RaceTest();
-		try {
-			test.execute();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 	private class Job implements Runnable {
-		
+
 		@Override
 		public void run() {
 			eso.inc();
-			
+
 		}
 	}
-	
+
 }

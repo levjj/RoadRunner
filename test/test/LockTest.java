@@ -19,7 +19,7 @@ public class LockTest {
 		}
 	}
 
-	private void execute() throws InterruptedException {
+	private void execute() {
 		dummyEso = new DummyESOWithEmptyMethod();
 		dummyEso.exec();
 		Thread t1 = new Thread(new Job1());
@@ -27,16 +27,10 @@ public class LockTest {
 		synchronized (lock) {
 			dummyEso.exec();
 		}
-		t1.join();
-
-	}
-
-	public static void main(String args[]) {
-
-		LockTest test = new LockTest();
 		try {
-			test.execute();
+			t1.join();
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

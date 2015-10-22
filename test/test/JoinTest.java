@@ -1,5 +1,7 @@
 package test;
 
+import org.junit.Test;
+
 public class JoinTest {
 
 	private DummyESOWithEmptyMethod dummyEso;
@@ -14,24 +16,18 @@ public class JoinTest {
 		}
 	}
 
-	private void execute() throws InterruptedException {
+	@Test
+	public void execute() {
 		dummyEso = new DummyESOWithEmptyMethod();
 		dummyEso.exec();
 		Thread t1 = new Thread(new Job1());
 		t1.start();
-		t1.join();
-		dummyEso.exec();
-	}
-
-	public static void main(String args[]) {
-
-		JoinTest test = new JoinTest();
 		try {
-			test.execute();
+			t1.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
+		dummyEso.exec();
 	}
 
 }
