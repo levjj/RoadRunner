@@ -1,36 +1,33 @@
 package test;
 
+import org.junit.Test;
+
 public class ForkTest {
-	
+
 	private DummyESOWithEmptyMethod dummyEso;
-	
+
 	private class Job1 implements Runnable {
-		
+
 		@Override
 		public void run() {
-			
+
 			dummyEso.exec();
-			
+
 		}
 	}
-	
-	private void execute() throws InterruptedException {
+
+	@Test
+	private void execute() {
 		dummyEso = new DummyESOWithEmptyMethod();
 		dummyEso.exec();
 		Thread t1 = new Thread(new Job1());
 		t1.start();
-		t1.join();
-	}
-	
-	public static void main(String args[]) {
-		
-		ForkTest test = new ForkTest();
 		try {
-			test.execute();
+			t1.join();
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
-	
+
 }

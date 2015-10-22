@@ -1,5 +1,7 @@
 package test;
 
+import org.junit.Test;
+
 public class UnsyncTest {
 
 	private DummyESOWithEmptyMethod dummyEso;
@@ -13,23 +15,20 @@ public class UnsyncTest {
 		}
 	}
 
-	private void execute() throws InterruptedException {
+	@Test
+	private void execute() {
 		dummyEso = new DummyESOWithEmptyMethod();
 		dummyEso.exec();
 		Thread t1 = new Thread(new Job1());
 		t1.start();
 		dummyEso.exec();
-		t1.join();
-
-	}
-
-	public static void main(String args[]) {
-
-		UnsyncTest test = new UnsyncTest();
 		try {
-			test.execute();
+			t1.join();
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
+
 }
