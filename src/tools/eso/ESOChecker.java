@@ -29,7 +29,6 @@ import tools.util.CV;
 @Abbrev("ESO")
 public class ESOChecker extends Tool {
 	
-	public static final String val = "kongposh";
 	private Collection<ClassInfo> classes;
 	
 	private Map<Object, CV> esoData = new HashMap<Object, CV>();
@@ -59,7 +58,7 @@ public class ESOChecker extends Tool {
 	
 	public ESOChecker(String name, Tool next, CommandLine commandLine) {
 		super(name, next, commandLine);
-		classes = new ArrayList<>();
+		classes = new ArrayList<ClassInfo>();
 	}
 	
 	public boolean isContract(ClassInfo c) {
@@ -135,16 +134,16 @@ public class ESOChecker extends Tool {
 	
 	@Override
 	public void enter(MethodEvent me) {
-		
-		synchronized (this) {
-			Object eso = me.getTarget();
-			CV esocv = esoData.get(eso);
-			if (esocv == null) {
-				esocv = createCV(ESOCheckerConstants.CV_INIT_SIZE);
-				esoData.put(eso, esocv);
-			}
-			ClassInfo esoInfo = me.getInfo().getOwner();
-			if ((classes.contains(esoInfo) || isContract(esoInfo)) && isInstance(me)) {
+		ClassInfo esoInfo = me.getInfo().getOwner();
+		if ((classes.contains(esoInfo) || isContract(esoInfo)) && isInstance(me)) {
+			synchronized (this) {
+				Object eso = me.getTarget();
+				CV esocv = esoData.get(eso);
+				if (esocv == null) {
+					esocv = createCV(ESOCheckerConstants.CV_INIT_SIZE);
+					esoData.put(eso, esocv);
+				}
+				
 				ShadowThread ct = me.getThread();
 				// CV esocv = esoInfoData.get(esoInfo);
 				int cid = ct.getTid();
