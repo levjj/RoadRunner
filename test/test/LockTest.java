@@ -1,5 +1,7 @@
 package test;
 
+import org.junit.Test;
+
 public class LockTest {
 
 	private Object lock = new Object();
@@ -19,7 +21,8 @@ public class LockTest {
 		}
 	}
 
-	private void execute() {
+	@Test
+	public void execute() {
 		dummyEso = new DummyESOWithEmptyMethod();
 		dummyEso.exec();
 		Thread t1 = new Thread(new Job1());

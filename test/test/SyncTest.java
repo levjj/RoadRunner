@@ -21,7 +21,7 @@ public class SyncTest {
 	}
 
 	@Test
-	private void execute() {
+	public void execute() {
 		dummyEso = new DummyESOWithEmptyMethod();
 		dummyEso.exec();
 		Thread t1 = new Thread(new Job1());
