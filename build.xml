@@ -146,6 +146,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		  <compilerarg value="-XDignore.symbol.file" />
 		</javac>
 		<move file="rrtools.properties" todir="${classes.dir}/rr/simple" />
+		<concat destfile="${classes.dir}/rrtools.properties">
+			<fileset file="${classes.dir}/rr/simple/rrtools.properties" />
+			<fileset file="${classes.dir}/tools/rrtools.properties" />
+		</concat>
 	</target>
 
 
