@@ -40,7 +40,7 @@ package test;
 
 import org.junit.Test;
 
-public class RaceTest {
+public class RaceTest extends BaseTest {
 
 	private DummyESOWithVariable eso;
 	final static int ITERS = 2;
@@ -57,8 +57,8 @@ public class RaceTest {
 			tasks[i].join();
 
 		}
-
 		System.out.println(">> Value is " + ITERS + " ? " + eso.get());
+		assertViolation();
 	}
 
 	private class Job implements Runnable {
@@ -66,7 +66,6 @@ public class RaceTest {
 		@Override
 		public void run() {
 			eso.inc();
-
 		}
 	}
 
