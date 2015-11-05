@@ -8,8 +8,6 @@ import java.util.WeakHashMap;
 import acme.util.Assert;
 import acme.util.Util;
 import acme.util.decorations.Decoration;
-import acme.util.decorations.DecorationFactory;
-import acme.util.decorations.DefaultValue;
 import acme.util.option.CommandLine;
 import rr.annotations.Abbrev;
 import rr.contracts.ThreadUnsafe;
@@ -32,18 +30,13 @@ public class ESOChecker extends Tool {
 	
 	private static final int CV_INIT_SIZE = 2;
 
-	private Collection<ClassInfo> classes;
-
-	private Map<Object, CV> esoData = new WeakHashMap<>();
-	
 	private static final ErrorMessage<MethodInfo> violations = ErrorMessages.makeMethodErrorMessage("ESOViolations");
 	
-	private static final Decoration<ShadowLock, CV> esoLockData = ShadowLock.makeDecoration("ESO:ShadowLock",
-			DecorationFactory.Type.MULTIPLE, new DefaultValue<ShadowLock, CV>() {
-				public CV get(final ShadowLock ld) {
-					return new CV(CV_INIT_SIZE);
-				}
-			});
+	private static Collection<ClassInfo> classes;
+
+	private final Map<Object, CV> esoData = new WeakHashMap<>();
+	
+	private final Decoration<ShadowLock, CV> esoLockData = makeLockDecoration("ESO:ShadowLock", new CV(CV_INIT_SIZE));
 
 	static CV ts_get_cv(ShadowThread ts) {
 		Assert.panic("Bad");
