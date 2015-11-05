@@ -215,7 +215,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			<env key="RR_TOOLPATH" path="jars/java-cup-11a.jar" />
 			<arg value="-quiet" />
 			<arg value="-classpath=classes-test:jars/junit.jar:jars/hamcrest.jar" />
-			<arg value="-tool=ESO" />
+			<arg value="-tool=S:ESO" />
 			<arg value="test.TestRunner" />
 		</exec>
 	</target>

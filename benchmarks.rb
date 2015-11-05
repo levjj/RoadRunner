@@ -85,7 +85,7 @@ benchmarks.each do |benchmark|
     ENV["JVM_ARGS"] = "-Xmx4g -Xms1g"
     ENV["RR_HOME"] = rrdir
     ENV["RR_TOOLPATH"] = "#{rrdir}/jars/java-cup-11a.jar"
-    ENV["TEST_ARGS"] = "-quiet -tool=ESO -logs=#{rrdir}/log/#{benchmark}/#{Date.today().to_s}"
+    ENV["TEST_ARGS"] = "-quiet -tool=S:ESO -logs=#{rrdir}/log/#{benchmark}/#{Date.today().to_s}"
     system "cd #{benchdir}/#{benchmark} && ./TEST"
   else
     puts "Unsupported action"
