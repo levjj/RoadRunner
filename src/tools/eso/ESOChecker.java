@@ -74,13 +74,13 @@ public class ESOChecker extends Tool {
 	public void create(NewThreadEvent e) {
 		ShadowThread ct = e.getThread();
 		CV cv = new CV(CV_INIT_SIZE);
-		cv.inc(ct.getTid());
 		ShadowThread pt = ct.getParent();
 		if (pt != null) {
 			CV pcv = ts_get_cv(pt);
 			cv.max(pcv);
 			pcv.inc(pt.getTid());
 		}
+		cv.inc(ct.getTid());
 		ts_set_cv(ct, cv);
 		super.create(e);
 	}
@@ -127,10 +127,9 @@ public class ESOChecker extends Tool {
 			CV ctcv = ts_get_cv(ct);
 			if (esocv.anyGt(ctcv)) {
 				reportContractViolation(me);
-			} else {
-				esocv.set(cid, ctcv.get(cid));
-				ctcv.inc(cid);
 			}
+			esocv.set(cid, ctcv.get(cid));
+			ctcv.inc(cid);
 			super.enter(me);
 		}
 	}
