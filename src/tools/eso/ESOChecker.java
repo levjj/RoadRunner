@@ -72,7 +72,7 @@ public class ESOChecker extends Tool {
 	public void create(NewThreadEvent e) {
 		ShadowThread ct = e.getThread();
 		CV cv = new CV(CV_INIT_SIZE);
-		cv.set(ct.getTid(), 1);
+		cv.inc(ct.getTid());
 		ShadowThread pt = ct.getParent();
 		if (pt != null) {
 			CV pcv = ts_get_cv(pt);
