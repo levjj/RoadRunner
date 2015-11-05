@@ -13,13 +13,15 @@ import acme.util.decorations.DefaultValue;
 import acme.util.option.CommandLine;
 import rr.annotations.Abbrev;
 import rr.contracts.ThreadUnsafe;
+import rr.error.ErrorMessage;
+import rr.error.ErrorMessages;
 import rr.event.AcquireEvent;
-import rr.event.Event;
 import rr.event.JoinEvent;
 import rr.event.MethodEvent;
 import rr.event.NewThreadEvent;
 import rr.event.ReleaseEvent;
 import rr.meta.ClassInfo;
+import rr.meta.MethodInfo;
 import rr.state.ShadowLock;
 import rr.state.ShadowThread;
 import rr.tool.Tool;
@@ -34,8 +36,8 @@ public class ESOChecker extends Tool {
 
 	private Map<Object, CV> esoData = new WeakHashMap<>();
 	
-	private static Collection<Event> violations = new ArrayList<>();
-
+	private static final ErrorMessage<MethodInfo> violations = ErrorMessages.makeMethodErrorMessage("ESOViolations");
+	
 	private static final Decoration<ShadowLock, CV> esoLockData = ShadowLock.makeDecoration("ESO:ShadowLock",
 			DecorationFactory.Type.MULTIPLE, new DefaultValue<ShadowLock, CV>() {
 				public CV get(final ShadowLock ld) {
@@ -139,14 +141,6 @@ public class ESOChecker extends Tool {
 	
 	private void reportContractViolation(MethodEvent me) {
 		Util.printf("\nContract Violation: %s\n", me + "  by thread " + me.getThread().getTid());
-		violations.add(me);
-	}
-	
-	public static Collection<Event> getViolations() {
-		return violations;
-	}
-
-	public static void resetViolations() {
-		violations = new ArrayList<>();
+		violations.error(me.getThread(), me.getInfo(), "ContractViolated", "ESO");
 	}
 }

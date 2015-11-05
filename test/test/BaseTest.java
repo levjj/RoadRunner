@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 
-import tools.eso.ESOChecker;
+import rr.error.ErrorMessage;
 
 public class BaseTest {
 
@@ -24,16 +24,19 @@ public class BaseTest {
 		return t;
 	}
 
-	protected void assertNoViolation() {
-		assertEquals(ESOChecker.getViolations().size(), 0);
-	}
-
-	protected void assertViolation() {
-		assertTrue(ESOChecker.getViolations().size() >= 1);
-	}
+	
+	int previousErrors = 0;
 	
 	@Before
 	public void resetViolations() {
-		ESOChecker.resetViolations();
+		previousErrors = ErrorMessage.getTotalNumberOfErrors();
+	}
+	
+	protected void assertNoViolation() {
+		assertEquals(previousErrors, ErrorMessage.getTotalNumberOfErrors());
+	}
+
+	protected void assertViolation() {
+		assertTrue(previousErrors < ErrorMessage.getTotalNumberOfErrors());
 	}
 }
